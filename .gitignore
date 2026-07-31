@@ -1,0 +1,16 @@
+# Environment variables & API keys
+.env
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary build artifacts
+README.html
+README.pdf
