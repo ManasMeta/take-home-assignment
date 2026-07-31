@@ -18,3 +18,34 @@ Imagine the pre-screening agent as a librarian organizing index cards. On one de
 ## Known Limitations
 - The current implementation provides a structural vertical slice using rule-based mocks for the LLM evaluation to ensure it runs immediately without an API key. To fully utilize an LLM, the `evaluate_criteria` node would need a real LangChain LLM instance injected.
 - The evidence retrieval relies on basic metadata matching rather than a full vector database due to time constraints, but demonstrates the architectural boundary.
+
+## Intended Graph & Architecture
+The agent follows an explicit directed graph designed to separate concerns:
+```mermaid
+graph TD
+    A[Structured Filtering] -->|Plausible Trials| B[Evidence Retrieval]
+    B -->|Relevant Evidence| C[Criterion Evaluation]
+    C -->|Evaluated States| D[Report Generation]
+    D --> E[End]
+```
+
+## State Schema
+The explicit state object passed between nodes ensures transparent checkpoints:
+- `patient_id`: Identifier of the current patient
+- `patient`: Full structured and unstructured patient data
+- `trials`: Full collection of trials
+- `filtered_trials`: Trials passing initial deterministic age/status filters
+- `evidence`: Specific RAG-retrieved chunks of patient and trial data
+- `evaluations`: Dictionary mapping trial ID to evaluated criteria (`SUPPORTED`, `UNKNOWN`, etc.)
+- `report`: The generated text output for the clinical research coordinator
+
+## Unfinished Nodes & Remaining Risks
+- **Unfinished Node - Full LLM Integration in Criterion Evaluation**: Currently mocked to guarantee deterministic execution for reviewers without API keys. To complete this, an LLM call with strict JSON output parsing (to force the 5 expected criterion states) must be added.
+- **Unfinished Node - RAG Pipeline**: Currently retrieves by simple dictionary key. Should be extended to use a real local vector store like ChromaDB chunked by criterion boundaries.
+- **Remaining Risk - Hallucination of Evidence**: Even with restricted context, an LLM might misinterpret conflicting lab result dates.
+- **Remaining Risk - Dataset Coverage**: Patients with missing eGFR or HbA1c may incorrectly trigger `NOT_SUPPORTED` instead of `UNKNOWN` if the LLM isn't perfectly prompted.
+
+## Evaluations to Add Next
+- **Context Relevance Score**: Did the retrieval step fetch the correct lab date for HbA1c?
+- **Agent Behavior Tests**: Test if the graph correctly halts and returns `REQUIRES_CLINICAL_REVIEW` when a complex criterion (like nested cardiovascular history) appears.
+- **State Transition Assertions**: Unit tests verifying that no `UNKNOWN` state gets converted into a negative answer during Report Generation.

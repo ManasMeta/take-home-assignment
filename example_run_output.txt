@@ -1,0 +1,21 @@
+Starting pipeline for patient PT_0...
+-> Running Structured Filtering...
+-> Retrieving Evidence...
+-> Evaluating Criteria (Mock LLM)...
+-> Generating Report...
+
+
+=== Pre-Screening Report for Patient PT_0 ===
+
+Trial: NCT03808051 - Clinical Trial Title Example
+Reason surfaced: Passed initial age and recruiting filters. Partial clinical match.
+--- Criteria Breakdown ---
+  * AGE: SUPPORTED - Patient age falls within trial boundaries. (Source: patient_demographics)
+  * HBA1C: UNKNOWN - HbA1c data not recent enough. (Source: lab_results)
+  * CURRENT_DIABETES_MEDICATIONS: SUPPORTED - Patient is on Metformin. (Source: medications_list)
+  * EGFR: NOT_SUPPORTED - eGFR below trial threshold. (Source: lab_results)
+  * TRIAL_RECRUITING_STATUS: SUPPORTED - Trial is actively recruiting. (Source: trial_metadata)
+  * OTHER_CRITERIA: REQUIRES_CLINICAL_REVIEW - Additional specific cardiovascular history needed. (Source: trial_inclusion_criteria)
+--- Summary ---
+Unanswered Questions: Missing info for hba1c
+Human-Review Status: REQUIRES_CLINICAL_REVIEW (Due to complex exclusion criteria)
