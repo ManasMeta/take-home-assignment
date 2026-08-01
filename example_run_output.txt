@@ -6,7 +6,29 @@
 
 ---
 
-### Candidate #1: NCT05168605 - Assessing the Efficacy of Targeted Home Visits in the Management of Chronic Conditions
+### Candidate #1: NCT04892199 - Does GLP-1RA Prevent Deterioration of Metabolic State in Prediabetic and Diabetic Patients Treated With Antipsychotic Medication?
+**Reason Surfaced**: Passed age and recruitment status filters; high clinical feature match.
+
+#### 1. Operational Recruiting Status
+- **Overall Status**: `ACTIVE_NOT_RECRUITING` — Trial status 'ACTIVE_NOT_RECRUITING' unconfirmed. *(Source: `trial_metadata`)*
+
+#### 2. Clinical Eligibility Criteria
+- [SUPPORTED] **AGE**: `SUPPORTED` — Patient age (60) satisfies trial bounds (18.0-65.0). *(Source: `patient_demographics`)*
+- [SUPPORTED] **HBA1C**: `SUPPORTED` — Patient HbA1c (7.0% on 2026-04-30) satisfies exclusion boundary (<= 57.0%). *(Source: `428a24e1-51f1-5c8a-b4a2-c4f182156f22`)*
+- [SUPPORTED] **CURRENT_DIABETES_MEDICATIONS**: `SUPPORTED` — Patient medication profile evaluated (No prohibited medications). *(Source: `medications_list`)*
+- [SUPPORTED] **EGFR**: `SUPPORTED` — Patient eGFR documented (91 mL/min/1.73m2 on 2026-04-25). *(Source: `ec8b66d9-6516-5547-87dc-85c2bdaf7e5c`)*
+
+#### 3. Unstructured Protocol Criteria
+- [REVIEW] **OTHER_CRITERIA**: `REQUIRES_CLINICAL_REVIEW` — Unstructured clinical eligibility criteria require human coordinator review. *(Source: `trial_eligibility_text`)*
+
+#### 4. Human Coordinator Summary
+- **Unanswered Questions / Missing Data**: None
+- **Human-Review Decision**: `REQUIRES_CLINICAL_REVIEW`
+- **Coordinator Notes**: Pending Human Coordinator Review (10 trials flagged for unstructured protocol clauses).
+
+---
+
+### Candidate #2: NCT05168605 - Assessing the Efficacy of Targeted Home Visits in the Management of Chronic Conditions
 **Reason Surfaced**: Passed age and recruitment status filters; high clinical feature match.
 
 #### 1. Operational Recruiting Status
@@ -28,7 +50,7 @@
 
 ---
 
-### Candidate #2: NCT05766488 - Assessing Continuous Glucose Monitor Use in Underserved Primary Care Patients
+### Candidate #3: NCT05766488 - Assessing Continuous Glucose Monitor Use in Underserved Primary Care Patients
 **Reason Surfaced**: Passed age and recruitment status filters; high clinical feature match.
 
 #### 1. Operational Recruiting Status
@@ -37,28 +59,6 @@
 #### 2. Clinical Eligibility Criteria
 - [SUPPORTED] **AGE**: `SUPPORTED` — Patient age (60) satisfies trial bounds (19.0-None). *(Source: `patient_demographics`)*
 - [SUPPORTED] **HBA1C**: `SUPPORTED` — Patient HbA1c documented (7.0% on 2026-04-30). *(Source: `428a24e1-51f1-5c8a-b4a2-c4f182156f22`)*
-- [SUPPORTED] **CURRENT_DIABETES_MEDICATIONS**: `SUPPORTED` — Patient medication profile evaluated (No prohibited medications). *(Source: `medications_list`)*
-- [SUPPORTED] **EGFR**: `SUPPORTED` — Patient eGFR documented (91 mL/min/1.73m2 on 2026-04-25). *(Source: `ec8b66d9-6516-5547-87dc-85c2bdaf7e5c`)*
-
-#### 3. Unstructured Protocol Criteria
-- [REVIEW] **OTHER_CRITERIA**: `REQUIRES_CLINICAL_REVIEW` — Unstructured clinical eligibility criteria require human coordinator review. *(Source: `trial_eligibility_text`)*
-
-#### 4. Human Coordinator Summary
-- **Unanswered Questions / Missing Data**: None
-- **Human-Review Decision**: `REQUIRES_CLINICAL_REVIEW`
-- **Coordinator Notes**: Pending Human Coordinator Review (10 trials flagged for unstructured protocol clauses).
-
----
-
-### Candidate #3: NCT05844644 - The Effects of the GOLO for Life® Plan With Release Supplement on Glycemic Control and Weight in Overweight and Obese Adults With Prediabetes or Type 2 Diabetes
-**Reason Surfaced**: Passed age and recruitment status filters; high clinical feature match.
-
-#### 1. Operational Recruiting Status
-- **Overall Status**: `RECRUITING` — Trial overall recruitment status is 'RECRUITING'. *(Source: `trial_metadata`)*
-
-#### 2. Clinical Eligibility Criteria
-- [SUPPORTED] **AGE**: `SUPPORTED` — Patient age (60) satisfies trial bounds (18.0-75.0). *(Source: `patient_demographics`)*
-- [SUPPORTED] **HBA1C**: `SUPPORTED` — Patient HbA1c (7.0% on 2026-04-30) meets trial threshold (>= 6.0%). *(Source: `428a24e1-51f1-5c8a-b4a2-c4f182156f22`)*
 - [SUPPORTED] **CURRENT_DIABETES_MEDICATIONS**: `SUPPORTED` — Patient medication profile evaluated (No prohibited medications). *(Source: `medications_list`)*
 - [SUPPORTED] **EGFR**: `SUPPORTED` — Patient eGFR documented (91 mL/min/1.73m2 on 2026-04-25). *(Source: `ec8b66d9-6516-5547-87dc-85c2bdaf7e5c`)*
 

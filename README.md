@@ -111,10 +111,10 @@ The agentic evaluation suite (`evals.py`) measures system reliability across all
 | **Total Criterion Assessments** | **`900`** | `900` | 15 patients x 10 candidate trials x 6 criteria. |
 
 ### Criterion State Distribution
-- **`SUPPORTED`**: 69.3% (624)
+- **`SUPPORTED`**: 70.7% (636)
 - **`REQUIRES_CLINICAL_REVIEW`**: 16.7% (150)
 - **`UNKNOWN`**: 11.0% (99)
-- **`NOT_SUPPORTED`**: 3.0% (27)
+- **`NOT_SUPPORTED`**: 1.7% (15)
 - **`CONFLICTING_EVIDENCE`**: 0.0% (0)
 
 ---
@@ -130,7 +130,9 @@ The agentic evaluation suite (`evals.py`) measures system reliability across all
 
 ## Known Limitations
 - **Fixed-Size / Rule-Based Chunking**: RAG chunking is rule-based and regex-driven rather than dense vector semantic search, which may miss nuanced clause boundaries in unusually long eligibility text.
-- **Scope-Constrained Automation**: `other_criteria` are strictly routed to `REQUIRES_CLINICAL_REVIEW` rather than partially automated — by design, per assignment scope constraints.
+- **Medication Evaluation Scope**: Medication evaluation currently pattern-matches insulin-exclusion clauses primarily; broader drug regimens (Metformin, SGLT2 inhibitors, GLP-1 agonists, sulfonylureas) default to `SUPPORTED` unless an explicit prohibition rule is triggered — flagged as a priority gap for future expansion.
+- **Post-Filter Trial Bounding**: Candidate trials are capped at 10 post-filter (`filtered[:10]`) purely to bound downstream evaluation cost on this dataset size; this is an arbitrary performance cap rather than a clinical judgment.
+- **Scope-Constrained Automation (`other_criteria`)**: `other_criteria` attaches a boilerplate review flag and eligibility snippet rather than full verbatim multi-clause extraction — preserving the necessity of human review by design per assignment scope.
 - **Dataset Consistency vs Code Path**: `CONFLICTING_EVIDENCE` was `0.0%` across the 900-assessment benchmark — this reflects the clean temporal lab trajectories in the synthetic dataset rather than unhandled code logic; `evaluate_hba1c()` explicitly contains detection logic for inconsistent lab observations (>2.5% HbA1c variance).
 - **Optional Advanced Modules**: HITL interrupt nodes (`--interactive_hitl`) and LangSmith cloud tracing (`--langsmith`) are optional additions beyond the assignment's minimum requirements (explicitly marked "not required" in the spec), included to demonstrate production reliability workflow design.
 

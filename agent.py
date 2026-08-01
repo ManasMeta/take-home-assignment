@@ -211,24 +211,39 @@ def evaluate_hba1c(hba1c_data: dict) -> CriterionResult:
     
     clauses = hba1c_data.get("trial_clauses", [])
     clause_text = " ".join(clauses).lower()
+    is_exclusion = bool(re.search(r"exclusion|prohibit|not eligible|exclude", clause_text, re.IGNORECASE))
     
     # Check trial HbA1c thresholds in clauses
     min_match = re.search(r"hba1c\s*[>≥=]\s*(\d+\.?\d*)", clause_text) or re.search(r"hba1c\s*\\\s*>\s*(\d+\.?\d*)", clause_text)
     if min_match:
         threshold = float(min_match.group(1))
         if val is not None:
-            if val >= threshold:
-                return CriterionResult(
-                    state="SUPPORTED",
-                    reason=f"Patient HbA1c ({val}% on {date}) meets trial threshold (>= {threshold}%).",
-                    evidence_id=src
-                )
+            if is_exclusion:
+                if val > threshold:
+                    return CriterionResult(
+                        state="NOT_SUPPORTED",
+                        reason=f"Patient HbA1c ({val}% on {date}) exceeds trial exclusion threshold (>{threshold}%).",
+                        evidence_id=src
+                    )
+                else:
+                    return CriterionResult(
+                        state="SUPPORTED",
+                        reason=f"Patient HbA1c ({val}% on {date}) satisfies exclusion boundary (<= {threshold}%).",
+                        evidence_id=src
+                    )
             else:
-                return CriterionResult(
-                    state="NOT_SUPPORTED",
-                    reason=f"Patient HbA1c ({val}% on {date}) is below trial requirement (>= {threshold}%).",
-                    evidence_id=src
-                )
+                if val >= threshold:
+                    return CriterionResult(
+                        state="SUPPORTED",
+                        reason=f"Patient HbA1c ({val}% on {date}) meets trial threshold (>= {threshold}%).",
+                        evidence_id=src
+                    )
+                else:
+                    return CriterionResult(
+                        state="NOT_SUPPORTED",
+                        reason=f"Patient HbA1c ({val}% on {date}) is below trial requirement (>= {threshold}%).",
+                        evidence_id=src
+                    )
                 
     return CriterionResult(
         state="SUPPORTED",
@@ -411,12 +426,14 @@ def report_generation(state: AgentState) -> dict:
     human_notes = state.get("human_review_notes", "Pending Human Review")
     human_approved = state.get("human_approved", False)
     
-    # Rank trials based on clinical support
+    # Rank trials based exclusively on clinical fit score (excluding recruiting status)
     def calculate_score(trial):
         nct_id = trial.get("nct_id")
         evs = evaluations.get(nct_id, {})
         score = 0
-        for key, res in evs.items():
+        clinical_keys = ["age", "hba1c", "current_diabetes_medications", "egfr"]
+        for key in clinical_keys:
+            res = evs.get(key, {})
             st = res.get("state")
             if st == "SUPPORTED":
                 score += 2

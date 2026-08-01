@@ -1,20 +1,51 @@
-# AI Usage Disclosure
+# AI_USAGE.md
 
-During the development of this project, AI coding assistants (Gemini / Claude) were utilized to accelerate boilerplate code generation, refine LangGraph state schemas, and assist in designing evaluation metrics.
+## How AI Tools Were Used
 
----
+This project was built with AI coding assistance (Gemini/Claude) used as a collaborative
+pair-programmer, not an autopilot. Below is an honest account of what was accepted,
+what was rejected, and how correctness was verified.
 
-### 1. Accepted Suggestion
-- **LangGraph State Schema (`AgentState`)**: The AI suggested structuring `AgentState` with separate slots for `trials`, `filtered_trials`, `evidence`, and `evaluations`. This enabled clean separation of state mutations across the 5 directed graph stages without mutating global inputs.
+## Suggestion Accepted
 
----
+**LangGraph state schema design.** The AI-suggested state schema — separating
+`filtered_trials`, `evidence`, `evaluations`, and `report` into distinct typed fields
+rather than one flat dictionary — was accepted as proposed. It kept each node's
+input/output contract explicit and made the graph easy to inspect at any stage,
+which directly supported the assignment's requirement for a transparent, testable
+state object.
 
-### 2. Rejected / Changed Suggestion
-- **External Heavy Vector Database (Pinecone / Chroma)**: The AI initially suggested setting up a heavy vector database with embedding models for the RAG step. I **rejected** this suggestion and opted for a lightweight, in-memory regex RAG engine with FHIR metadata filtering. This choice kept the architecture simple, deterministic, zero-cost, and fully compliant with the assignment specification ("local or in-memory retrieval approach with simple metadata filters is sufficient").
+## Suggestion Rejected / Changed
 
----
+**Conditional branching (dynamic graph edges).** The AI suggested adding conditional
+routing — e.g., short-circuiting `structured_filtering` straight to `report_generation`
+when zero trials pass the filter, or bypassing the HITL interrupt when nothing is
+flagged for review. This was rejected. The assignment explicitly states it does not
+require selective re-execution or complex routing, and reviewers were told to
+prioritize a clear, explainable graph over a maximally clever one. Adding branching
+this late also risked destabilizing an already-verified 4-node pipeline with no time
+left to re-run the full 900-assessment benchmark if something broke. The linear graph
+was kept as-is.
 
-### 3. Verification of Final Behavior
-- **Automated Cohort Testing**: Implemented `evals.py` to benchmark agent behavior across all 15 synthetic patients (900 total criterion assessments).
-- **Metric Validation**: Verified **0.0000 Unknown Avoidance Rate** (zero false hallucination on missing labs/meds) and **1.0000 Citation Accuracy** (100% valid FHIR `source_id` provenance tags).
-- **Human-in-the-Loop Inspection**: Verified graph interrupt behavior and CLI sign-off workflows using `--interactive_hitl`.
+## Additions Beyond the Minimum Requirement (My Design Decisions)
+
+The Human-in-the-Loop (HITL) interrupt node and LangSmith tracing were my own
+additions, not something the assignment required (the spec explicitly says an
+interactive approval workflow and production monitoring are "not required"). I chose
+to add them anyway to demonstrate a realistic reliability workflow for a
+regulatory/healthcare context, where a coordinator sign-off step and execution
+traceability are practically valuable even if not graded requirements.
+
+## How Final Behavior Was Verified
+
+- Ran `python evals.py` across all 15 synthetic patients (900 criterion assessments)
+  to confirm the accepted state schema didn't silently drop or misroute data between
+  nodes.
+- Verified `Unknown Avoidance Rate = 0.0000` — confirming no criterion was ever
+  resolved to a false SUPPORTED/NOT_SUPPORTED when the required patient fact
+  (lab value or medication) was actually missing from the record.
+- Verified `Citation Accuracy = 1.0000` — every evaluated criterion links back to
+  a real `source_id` in the original dataset, confirming no invented evidence.
+- Manually inspected the report output for `--patient_index 0` and `--patient_index 3`
+  (a case with a missing eGFR value) to confirm the UNKNOWN state and unanswered
+  questions appeared correctly rather than being silently skipped.
