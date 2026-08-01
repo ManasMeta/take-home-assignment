@@ -46,6 +46,8 @@ traceability are practically valuable even if not graded requirements.
   (lab value or medication) was actually missing from the record.
 - Verified `Citation Accuracy = 1.0000` — every evaluated criterion links back to
   a real `source_id` in the original dataset, confirming no invented evidence.
+- Verified HbA1c exclusion handling against protocol `NCT05181449` to ensure exclusion rules (e.g., `HbA1c > 11%`) evaluate correctly as `SUPPORTED` when patient is within safety limits and `NOT_SUPPORTED` when exceeded.
+- Verified that `calculate_score` aggregates exclusively the 4 clinical criteria (`age`, `hba1c`, `medications`, `egfr`), keeping operational recruiting status separated per specification.
 - Manually inspected the report output for `--patient_index 0` and `--patient_index 3`
   (a case with a missing eGFR value) to confirm the UNKNOWN state and unanswered
   questions appeared correctly rather than being silently skipped.
